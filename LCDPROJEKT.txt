@@ -1,7 +1,9 @@
 #include<xc.h>
+#include<config.h>
 void Init_LCD(void);
 void LCD_sendCW(char);
 void LCD_sendData(char);
+void lcdmessage(void);
 
 #define LCD_DATA PORTA
 #define LCD_RS PORTAbits.RA0
@@ -31,7 +33,7 @@ void lcdmessage()
 	TRISC=0b00000000;
 	Init_LCD();
 	m= PORTC & 0xf;
-//	TRISC=m;
+	TRISC=m;
 	for(i=0;MESS[m][i]!=0;i++)
 		LCD_sendData(MESS[m][i]);
 }
@@ -42,11 +44,11 @@ void Init_LCD() //initialize
 	_delay(1);
 	D1C1;
 	_delay(1);
-	ENTER;
+	ENTRY;
 	_delay(1);
 	CLEAR;
 	_delay(1);
-	HOME:
+	HOME;
 	_delay(1);
 }
 
