@@ -11,25 +11,47 @@ int DEGREE = 0, HN = 0, LN = 0;
 
 	while(1)
 		{
-			while(0=<DEGREE=<90)
+			if(PORTAbits.ra2==0)
 				{
 				LN = DEGREE%10; //Finding the Lower Number
 				HN = DEGREE/10; //Finding the Higher Number
 
 				For(t=0;t<1000;t++)
 					{
-						PORTD = lcd[LN];  //writing to LCD
 						PORTE = 0b00000001;
+						PORTD = lcd[LN];  //writing to LCD
 						delay_(500); //setting time delay so we can see the lower number in a long enough time
 					}
 				For(t=0;t<1000;t++)
 					{
-						PORTD = lcd[HN]; //writing to LCD
 						PORTE = 0b00000010;
+						PORTD = lcd[HN]; //writing to LCD
 						delay_(500); //setting time delay so we can see the higher number in a long enough time
 					}
 				LN = 0;
 				HN = 0; //resetting write cache
+				}
+			else if(PORTAbits.ra2==1)
+				{
+				LN = DEGREE%10; //Finding the Lower Number
+				HN = DEGREE/10; //Finding the Higher Number
+				while((LN!=0)&&(HN!=0))
+					{
+					For(t=0;t<1000;t++)
+					{
+						PORTE = 0b00000001;
+						PORTD = lcd[LN];  //writing to LCD
+						LN=LN/1.1;
+						delay_(500); //setting time delay so we can see the lower number in a long enough time
+					}
+					For(t=0;t<1000;t++)
+					{
+						PORTE = 0b00000010;
+						PORTD = lcd[HN]; //writing to LCD
+						HN=HN/1.1;
+						delay_(500); //setting time delay so we can see the higher number in a long enough time
+					}
+					}
 				}
 	}
 }
