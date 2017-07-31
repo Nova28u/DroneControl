@@ -4,6 +4,7 @@ void Init_LCD(void);
 void LCD_sendCW(char);
 void LCD_sendData(char);
 void lcdmessage(void);
+void main(void);
 
 #define LCD_DATA PORTA
 #define LCD_RS PORTAbits.RA0
