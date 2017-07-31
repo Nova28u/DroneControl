@@ -1,0 +1,14 @@
+ for (x=0;x<200;x++)
+        {
+            PORTEbits.RE0=1;
+            _delay(568);
+            PORTEbits.RE0=0;
+            _delay(269);
+        }
+          for (x=0;x<600;x++)
+        {
+            PORTEbits.RE0=1;
+            _delay(239);
+            PORTEbits.RE0=0;
+            _delay(239);
+        }

@@ -1,0 +1,77 @@
+for (x=0;x<20;x++)
+        {
+            PORTAbits.RA4=1;
+            _delay(758);
+            PORTAbits.RA4=0;
+            _delay(758);
+        }
+        for(x=0;x<1500;x++)
+        {
+        PORTAbits.RA4=0;
+        }
+          for (x=0;x<20;x++)
+        {
+            PORTAbits.RA4=1;
+            _delay(758);
+            PORTAbits.RA4=0;
+            _delay(758);
+        }
+        for(x=0;x<3000;x++)
+        {
+        PORTAbits.RA4=0;
+        }
+        for (x=0;x<20;x++)
+        {
+            PORTAbits.RA4=1;
+            _delay(758);
+            PORTAbits.RA4=0;
+            _delay(758);
+        }
+        for(x=0;x<3000;x++)
+        {
+        PORTAbits.RA4=0;
+        }
+        for (x=0;x<20;x++)
+        {
+            PORTAbits.RA4=1;
+            _delay(980);
+            PORTAbits.RA4=0;
+            _delay(980);
+        }
+        for(x=0;x<1000;x++)
+        {
+        PORTAbits.RA4=0;
+        }
+        for (x=0;x<20;x++)
+        {
+            PORTAbits.RA4=1;
+            _delay(758);
+            PORTAbits.RA4=0;
+            _delay(758);
+        }
+        for(x=0;x<3000;x++)
+        {
+        PORTAbits.RA4=0;
+        }
+        for (x=0;x<20;x++)
+        {
+            PORTAbits.RA4=1;
+            _delay(649);
+            PORTAbits.RA4=0;
+            _delay(649);
+        }
+         for(x=0;x<5500;x++)
+        {
+        PORTAbits.RA4=0;
+        }
+        for (x=0;x<20;x++)
+        {
+            PORTAbits.RA4=1;
+            _delay(1316);
+            PORTAbits.RA4=0;
+            _delay(1316);
+        }
+         for(x=0;x<5750;x++)
+        {
+        PORTAbits.RA4=0;
+        }
