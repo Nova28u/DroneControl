@@ -1,5 +1,5 @@
 #include<xc.h>
-#include<config.h>
+#include "config.h"
 void Init_LCD(void);
 void LCD_sendCW(char);
 void LCD_sendData(char);
@@ -7,14 +7,14 @@ void lcdmessage(void);
 
 #define LCD_DATA PORTA
 #define LCD_RS PORTAbits.RA0
-#define LCD_E PORTBbits.RA1
+#define LCD_E PORTBbits.RB1
 #define SET LCD_sendCW(0b00111000)
 #define D1C1 LCD_sendCW(0b00001100)
 #define ENTRY LCD_sendCW(0b00000110)
 #define CLEAR LCD_sendCW(0b00000001)
 #define HOME LCD_sendCW(0b00000010)
 
-char MESS[][] = {
+char MESS[][32] = {
 				{"PRESS C TO FLY STRAIGHT"},
 				{"INPUT TILT SIMULATION"},
 				{"TILT CORRECTED"},
@@ -22,7 +22,7 @@ char MESS[][] = {
 				{"TURNING RIGHT"},
 				{"TURNING LEFT"},
 				{"INVALID INPUT"}
-				}
+				};
 
 void lcdmessage()
 {
@@ -57,7 +57,7 @@ void LCD_sendCW(char x)
 	LCD_RS=0;
 	LCD_E=1;
 	LCD_DATA=x;
-	LCD_E;
+	LCD_E=0;
 	_delay(1000);
 }
 
