@@ -14,7 +14,8 @@
 char getkeypad(void);
 void safetysound(void);
 void warningsound(void);
-void sevensegment(char autodecision, char getkeypad(), void warningsound(), void safetysound());
+void sevensegmentC(void);
+void sevensegmentD(void);
 
 void main(void) {
   
@@ -56,13 +57,13 @@ while(1){
   
             if(direction=='A'){
             //"turning left"
-                sevensegment();
+                sevensegmentC();
                 
             }
 
             else if(direction=='B'){
             //"turning right"
-                sevensegment();
+                sevensegmentC();
             }
             else{
             //"invalid input"
@@ -87,13 +88,13 @@ while(1){
         
               
             if(direction=='B'){ //"turning right"
-                sevensegment(); 
+                sevensegmentD(); 
             }
            
     
        
             else if(direction=='A'){ //"Turing left"
-                sevensegment();
+                sevensegmentD();
             }
            
             
@@ -201,16 +202,14 @@ void LCD_sendData(char x)
 }
 */
 
-void sevensegment(char autodecision, char getkeypad(), void warningsound(),void safetysound())
+void sevensegmentD(void)
 {
 int display[10] = {0b1111110, 0b0110000, 0b1101101, 0b1111001, 0b0110011, 0b1011011, 0b1011111, 0b1110000,0b1111111,0b1111011};   //CC lookup table
 int  HN = 0, LN = 0;
 int t;
 
 	
-		
-			if(autodecision=='D')
-				{
+				
 				HN = 1; //Finding the Lower Number
 				LN = 5; //Finding the Higher Number
 
@@ -228,9 +227,15 @@ int t;
 					}
 				LN = 0;
 				HN = 0; //resetting write cache
-				}
-			else if(autodecision=='C')
-				{
+				
+
+}
+
+void sevensegmentC(void)
+{
+int display[10] = {0b1111110, 0b0110000, 0b1101101, 0b1111001, 0b0110011, 0b1011011, 0b1011111, 0b1110000,0b1111111,0b1111011};   //CC lookup table
+int  HN = 0, LN = 0;
+int t;
 				
 						HN = getkeypad(); //Finding the Lower Number
 						LN = getkeypad(); //Finding the Higher Number
@@ -248,10 +253,8 @@ int t;
 						(HN*10+LN)/1.1;
                         }while((HN*10+LN)>0);
                         
-                        safeteysound();
+                        safetysound();
                         
-					}
-					
 }// end of seven segment
 
 void safetysound(void){
