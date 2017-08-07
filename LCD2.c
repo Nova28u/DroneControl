@@ -1,6 +1,6 @@
 void lcdmessage(){
 	unsigned char i;
-	int m;
+	int m=1;
     	int x;
 	
     	SET;
