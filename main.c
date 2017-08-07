@@ -1,9 +1,8 @@
-#include <xc.h>
-#include "main_project.h"
+#include "header.h"
 #define DA PORTDbits.RD0 // Define data available from encoder
 
 #define LCD_DATA PORTA
-#define LCD_RS PORTAbits.RA0
+#define LCD_RS 1PORTAbits.RA0
 #define LCD_E PORTBbits.RB1
 #define SET 0b00111000
 #define D1C1 0b00001100
@@ -12,10 +11,20 @@
 #define HOME 0b00000010//for LCD
 
 
+char MESS[][32] = {
+				{"PRESS C TO FLY STRAIGHT"},
+				{"INPUT TILT SIMULATION"},
+				{"TILT CORRECTED"},
+				{"SELECT TURN DIRECTION"},
+				{"TURNING RIGHT"},
+				{"TURNING LEFT"},
+				{"INVALID INPUT"}
+				};
+
 
 char getkeypad(void);
 void safeteysound(void);
-void warningsound(void);
+void warningsound(void);//Unneeded function declaration
 
 void main(void) {
   
@@ -152,15 +161,6 @@ if(DA==1)
 } //keypad     
   
 
-char MESS[][32] = {
-				{"PRESS C TO FLY STRAIGHT"},
-				{"INPUT TILT SIMULATION"},
-				{"TILT CORRECTED"},
-				{"SELECT TURN DIRECTION"},
-				{"TURNING RIGHT"},
-				{"TURNING LEFT"},
-				{"INVALID INPUT"}
-				};
 
 void lcdmessage()
 {
@@ -361,7 +361,6 @@ for (x=0;x<200;x++)
             _delay(239);
         }
 }//end of sound
-
 
 
 
