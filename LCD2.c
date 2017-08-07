@@ -1,9 +1,9 @@
 void lcdmessage(){
 	unsigned char i;
-	int m=1;
-    int x;
+	int m;
+    	int x;
 	
-    SET;
+    	SET;
 	_delay(1);
 	D1C1;
 	_delay(1);
