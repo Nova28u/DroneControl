@@ -14,7 +14,7 @@
 char getkeypad(void);
 void safetysound(void);
 void warningsound(void);
-void sevensegment(char autodecision);
+void sevensegment(char autodecision, char getkeypad(), void warningsound(), void safetysound());
 
 void main(void) {
   
@@ -30,7 +30,6 @@ int invalid1,invalid2,invalid3;//loop back to first condition of if else stateme
 
 while(1){
     
- 
     do{  
     
     invalid1=0;
@@ -49,31 +48,27 @@ while(1){
         //"A=left
         //B=right"
     
-        direction= getkeypad();
-  
+        
         do{
             invalid2=0;
             
+            direction= getkeypad();
+  
             if(direction=='A'){
             //"turning left"
-            //display tilt angle
+                sevensegment();
+                
             }
 
             else if(direction=='B'){
             //"turning right"
-            //display tilt angle
+                sevensegment();
             }
             else{
             //"invalid input"
                  invalid2=1;
             } 
         }while(invalid2==1);   
-    
-        warningsound();//playsound1
-        
-        //decrement tiltangle1 to zero
-        
-        safetysound();//playsound2
     
 
         }//if1
@@ -82,21 +77,23 @@ while(1){
    
         //"A=left
         //B=right"
-        direction= getkeypad();
+       
         
         do{ 
         
-        invalid3=0;    
+        invalid3=0; 
         
-       
+         direction= getkeypad();
+        
+              
             if(direction=='B'){ //"turning right"
-                 //display turn angle 15 
+                sevensegment(); 
             }
            
     
        
             else if(direction=='A'){ //"Turing left"
-                 //display turn angle 15
+                sevensegment();
             }
            
             
@@ -116,7 +113,7 @@ while(1){
     }
 
         }while(invalid1==1); //check autodecision for auto or not and loop again if invalid
-
+        
 }//large while 
 
 }//main
@@ -145,8 +142,6 @@ if(DA==1)
  
   return value_used;
 } //keypad     
-
-  
 
 char MESS[][32] = {
 				{"PRESS C TO FLY STRAIGHT"},
@@ -205,40 +200,38 @@ void LCD_sendData(char x)
 	_delay(500);
 }
 */
-void sevensegment(char autodecision)
+
+void sevensegment(char autodecision, char getkeypad(), void warningsound(),void safetysound())
 {
 int display[10] = {0b1111110, 0b0110000, 0b1101101, 0b1111001, 0b0110011, 0b1011011, 0b1011111, 0b1110000,0b1111111,0b1111011};   //CC lookup table
 int  HN = 0, LN = 0;
 int t;
 
-	while(1)
-		{
-			if(autodecision=='C')
+	
+		
+			if(autodecision=='D')
 				{
-				HN = getkeypad(); //Finding the Lower Number
-				LN = getkeypad(); //Finding the Higher Number
+				HN = 1; //Finding the Lower Number
+				LN = 5; //Finding the Higher Number
 
 				for(t=0;t<1000;t++)
 					{
 						PORTE = 0b00000001;
 						PORTD = display[LN];  //writing to LCD
-						_delay(500); //setting time delay so we can see the lower number in a long enough time
+						_delay(5000000); //setting time delay so we can see the lower number in a long enough time
 					}
 				for(t=0;t<1000;t++)
 					{
 						PORTE = 0b00000010;
 						PORTD = display[HN]; //writing to LCD
-						_delay(500); //setting time delay so we can see the higher number in a long enough time
+						_delay(5000000); //setting time delay so we can see the higher number in a long enough time
 					}
 				LN = 0;
 				HN = 0; //resetting write cache
 				}
-			else if(autodecision=='D')
+			else if(autodecision=='C')
 				{
-				while((HN*10+LN)>0)
-					{
-					for(t=0;t<1000;t++)
-					{
+				
 						HN = getkeypad(); //Finding the Lower Number
 						LN = getkeypad(); //Finding the Higher Number
 						
@@ -249,19 +242,21 @@ int t;
 						PORTE = 0b00000010;
 						PORTD = display[HN]; //writing to LCD
 						_delay(500); //setting time delay so we can see the higher number in a long enough time
-						
+                        
+                        do{
+                        warningsound();//beep boop beep boop danger
 						(HN*10+LN)/1.1;
+                        }while((HN*10+LN)>0);
+                        
+                        safeteysound();
+                        
 					}
-					}
-				}
-	}
-//return autodecision;
+					
 }// end of seven segment
-
 
 void safetysound(void){
 int x;
-for (x=0;x<20;x++)
+for (x=0;x<30;x++)
         {
             PORTBbits.RB5=1;
             _delay(758);
@@ -272,7 +267,7 @@ for (x=0;x<20;x++)
         {
         PORTBbits.RB5=0;
         }
-          for (x=0;x<20;x++)
+          for (x=0;x<30;x++)
         {
             PORTBbits.RB5=1;
             _delay(758);
@@ -283,7 +278,7 @@ for (x=0;x<20;x++)
         {
         PORTAbits.RA4=0;
         }
-        for (x=0;x<20;x++)
+        for (x=0;x<30;x++)
         {
             PORTBbits.RB5=1;
             _delay(758);
@@ -294,7 +289,7 @@ for (x=0;x<20;x++)
         {
         PORTBbits.RB5=0;
         }
-        for (x=0;x<20;x++)
+        for (x=0;x<30;x++)
         {
             PORTBbits.RB5=1;
             _delay(980);
@@ -305,7 +300,7 @@ for (x=0;x<20;x++)
         {
         PORTAbits.RA4=0;
         }
-        for (x=0;x<20;x++)
+        for (x=0;x<30;x++)
         {
             PORTBbits.RB5=1;
             _delay(758);
@@ -316,7 +311,7 @@ for (x=0;x<20;x++)
         {
         PORTAbits.RA4=0;
         }
-        for (x=0;x<20;x++)
+        for (x=0;x<30;x++)
         {
             PORTBbits.RB5=1;
             _delay(649);
@@ -327,7 +322,7 @@ for (x=0;x<20;x++)
         {
         PORTBbits.RB5=0;
         }
-        for (x=0;x<20;x++)
+        for (x=0;x<30;x++)
         {
             PORTBbits.RB5=1;
             _delay(1316);
