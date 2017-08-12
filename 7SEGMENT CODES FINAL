@@ -1,0 +1,150 @@
+void sevensegmentD(void)
+{
+int display[10] = {0b00000011, 0b10011111, 0b00100101, 0b00001101, 0b10011001, 0b01001001, 0b01000001, 0b00011111,0b00000001,0b00011001};   //CC lookup table
+int  HN = 0, LN = 0;
+int t;
+
+	
+				
+				HN = 1; //Finding the Lower Number
+				LN = 5; //Finding the Higher Number
+
+				for(t=0;t<10000;t++)
+            		{
+                        PORTE = 0b00000001;
+                        PORTD = display[LN];  //writing to LCD
+                    	_delay(500); //setting time delay so we can see the lower number in a long enough time
+                	
+               	
+                        PORTE = 0b00000010;
+                        PORTD = display[HN]; //writing to LCD
+                        _delay(500);
+                    }
+                
+				PORTE=0b00000001;
+                
+                PORTD=0b11111111;
+                PORTE=0b00000010;
+                PORTD=0b11111111; //clear 7 segment
+				
+
+}//end of sevensegmentD
+
+void sevensegmentC(void)
+{
+int display[10] = {0b00000011, 0b10011111, 0b00100101, 0b00001101, 0b10011001, 0b01001001, 0b01000001, 0b00011111,0b00000001,0b00011001};   //CC lookup table
+int  HN = 0, LN = 0;
+int t,z,m,i,result;
+char x;
+char MESS[][16] = {
+				{"C TO AUTOPILOT"},
+                {"D TO STEER"},
+				{"INPUT TILT"},
+                {"90 MAX"},
+				{"A=LEFT"},
+                {"B=RIGHT"},
+				{"TURNING LEFT"},
+                {"BOI"},
+				{"TURNING RIGHT"},
+                {"BOI"},
+				{"INVALID INPUT"},
+                {"PRESS RESET"}, 
+                
+                {"INPUT BIG NO"},
+                {"BOI"},
+                {"INPUT SMALL NO"},
+                {"BOI"}      };
+
+            
+    
+            initLCD(); 
+
+            LCD_sendCW(0b00000110);
+            m=6*2;
+            for(i=0;MESS[m][i]!=0;i++)
+                LCD_sendData(MESS[m][i]);
+
+            LCD_sendCW(0b11000000); //Next Line
+            for(i=0;MESS[m+1][i]!=0;i++)
+                LCD_sendData(MESS[m+1][i]);
+
+            for(z=0;z<1000;z++){_delay(5000);}
+
+            LCD_sendCW(0b00000001);
+	
+                
+                //"INPUT BIG NO, BOI"
+                    
+
+						HN = getkeypad()-'0'; //Finding the Lower Number char to int conversion also done
+                       
+                        
+                         
+                    initLCD(); 
+
+                    LCD_sendCW(0b00000110);
+                    m=7*2;
+                    for(i=0;MESS[m][i]!=0;i++)
+                        LCD_sendData(MESS[m][i]);
+
+                    LCD_sendCW(0b11000000); //Next Line
+                    for(i=0;MESS[m+1][i]!=0;i++)
+                        LCD_sendData(MESS[m+1][i]);
+
+                    for(z=0;z<1000;z++){_delay(5000);}
+
+                    LCD_sendCW(0b00000001);
+
+                
+                //"INPUT SMALL NO, BOI" 
+                        
+                        
+                        
+						LN = getkeypad()-'0'; //Finding the Higher Number char to int also done
+                        
+						for(t=0;t<10000;t++)
+                        {
+                    	
+						PORTE = 0b00000001;
+						PORTD = display[LN];  //writing to LCD
+						_delay(500); //setting time delay so we can see the lower number in a long enough time
+                    
+                        
+						PORTE = 0b00000010;
+						PORTD = display[HN]; //writing to LCD
+						_delay(500); //setting time delay so we can see the higher number in a long enough time
+                       
+                        }
+                        
+                        do{
+                            
+                        warningsound();//beep boop beep boop danger
+                        
+                        result=((HN*10)+LN)/1.1;
+                        HN=result/10;
+                        LN=result%10;
+                        
+                        for(t=0;t<2000;t++)
+                        {
+                    	
+						PORTE = 0b00000001;
+						PORTD = display[LN];  //writing to LCD
+						_delay(500); //setting time delay so we can see the lower number in a long enough time
+                    
+                        
+						PORTE = 0b00000010;
+						PORTD = display[HN]; //writing to LCD
+						_delay(500); //setting time delay so we can see the higher number in a long enough time
+                       
+                        }
+                        
+                        }while((HN*10+LN)>0);
+                      
+                        
+                        safetysound();
+                        
+                        PORTD=0b11111111;
+                        PORTE=0b00000010;
+                        PORTD=0b11111111; //clear 7 segment
+                        
+}// end of seven segmentC
