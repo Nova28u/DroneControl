@@ -1,71 +1,245 @@
 #include <xc.h>
 #include "main_project.h"
+
 #define DA PORTDbits.RD0 // Define data available from encoder
-
-#define LCD_DATA PORTA
+#define LCD_DATA PORTC
 #define LCD_RS PORTAbits.RA0
-#define LCD_E PORTBbits.RB1
-#define SET 0b00111000
-#define D1C1 0b00001100
-#define ENTRY 0b00000110
-#define CLEAR 0b00000001
-#define HOME 0b00000010//for LCD
+#define LCD_E PORTAbits.RA1
+#define SET LCD_sendCW(0b00111000)
+#define D1C1 LCD_sendCW(0b00001100)
+#define ENTRY LCD_sendCW(0b00000110)
+#define CLEAR LCD_sendCW(0b00000001)
+#define HOME LCD_sendCW(0b00000010)
 
-char getkeypad(void);
-void safetysound(void);
-void warningsound(void);
-void sevensegmentC(void);
-void sevensegmentD(void);
 
-void main(void) {
+void initLCD(void);
+void LCD_sendCW(char x);
+void LCD_sendData(char x);
+
+char getkeypad();
+void safetysound();
+void warningsound();
+void sevensegmentC();
+void sevensegmentD();
+
+void main() {
   
     
 ADCON1 = 0x0F;         //allow usage of digital inputs for all pins
-TRISA = 0b00111111;    //Declare extra output pins for LCD 
+TRISA = 0b00001000;    //Declare extra output pins for LCD 
 TRISB = 0b11001111;    //Declare inputs from RB0 to RB3 and output from RB4 and RB5 ignore RB6 and RB7 note: RB5 is speaker
 TRISC = 0b00000000;    //Declare output pins for LCD
 TRISD = 0b00000000;    //Declare outputs for 7 segment
 TRISE = 0b00000000;    //LCD selector
+
 char autodecision,tiltangle1,direction;
 int invalid1,invalid2,invalid3;//loop back to first condition of if else statements
+unsigned char i;
+int m,z,checker;
+char x;
 
-while(1){
-    
-    do{  
-    
-    invalid1=0;
-    // "C autopilot
-    // D to turn"
+checker=0;
 
-    autodecision=getkeypad();
+PORTE=0b00000001;
+PORTD=0b11111111;
+PORTE=0b00000010;
+PORTD=0b11111111; //clear 7 segment
+
+char MESS[][16] = {
+				{"C TO AUTOPILOT"},
+                {"D TO STEER"},
+				{"INPUT TILT"},
+                {"90 MAX"},
+				{"A=LEFT"},
+                {"B=RIGHT"},
+				{"TURNING LEFT"},
+                {"BOI"},
+				{"TURNING RIGHT"},
+                {"BOI"},
+				{"INVALID INPUT"},
+                {"TRY AGAIN"},
+                {"INPUT BIG NO"},
+                {"BOI"},
+                {"INPUT SMALL NO"},
+                {"BOI"}
+};
+
+
+    
+    while(1){
         
+    invalid1=0;
+       
+        
+        initLCD(); 
+    
+		LCD_sendCW(0b00000110);
+		m=0*2;
+		for(i=0;MESS[m][i]!=0;i++)
+			LCD_sendData(MESS[m][i]);
+        
+        LCD_sendCW(0b11000000); //Next Line
+        for(i=0;MESS[m+1][i]!=0;i++)
+			LCD_sendData(MESS[m+1][i]);
+        
+        for(z=0;z<1000;z++){_delay(10000);}
+        
+		LCD_sendCW(0b00000001);
+	
+    // "C to autopilot 
+    //   D to steer
+   
+    autodecision=getkeypad();
+    
+    
+    
+    
+     do{
+         
+       
     if(autodecision=='C'){
-    
-        //"input tilt 
-        // 90 max"
-    
-        tiltangle1= getkeypad();
-    
-        //"A=left
-        //B=right"
-    
+         
+
+        
+
+            initLCD(); 
+
+            LCD_sendCW(0b00000110);
+            m=2*2;
+            for(i=0;MESS[m][i]!=0;i++)
+                LCD_sendData(MESS[m][i]);
+
+            LCD_sendCW(0b11000000); //Next Line
+            for(i=0;MESS[m+1][i]!=0;i++)
+                LCD_sendData(MESS[m+1][i]);
+
+            for(z=0;z<1000;z++){_delay(10000);}
+
+            LCD_sendCW(0b00000001);
+
+            //"A=left
+            //B=right"
+
+          direction= getkeypad();
         
         do{
             invalid2=0;
             
-            direction= getkeypad();
   
             if(direction=='A'){
+                 
+                
+            
+
+            initLCD(); 
+
+            LCD_sendCW(0b00000110);
+            m=3*2;
+            for(i=0;MESS[m][i]!=0;i++)
+                LCD_sendData(MESS[m][i]);
+
+            LCD_sendCW(0b11000000); //Next Line
+            for(i=0;MESS[m+1][i]!=0;i++)
+                LCD_sendData(MESS[m+1][i]);
+
+            for(z=0;z<1000;z++){_delay(10000);}
+
+            LCD_sendCW(0b00000001);
+	
             //"turning left"
+            
+                
+
+                initLCD(); 
+
+                LCD_sendCW(0b00000110);
+                m=1*2;
+                for(i=0;MESS[m][i]!=0;i++)
+                    LCD_sendData(MESS[m][i]);
+
+                LCD_sendCW(0b11000000); //Next Line
+                for(i=0;MESS[m+1][i]!=0;i++)
+                    LCD_sendData(MESS[m+1][i]);
+
+                for(z=0;z<1000;z++){_delay(10000);}
+
+                LCD_sendCW(0b00000001);
+
+                //"input tilt 
+                // 90 max"
+
+        
+            
                 sevensegmentC();
                 
             }
 
             else if(direction=='B'){
+                
+            
+
+            initLCD(); 
+
+            LCD_sendCW(0b00000110);
+            m=4*2;
+            for(i=0;MESS[m][i]!=0;i++)
+                LCD_sendData(MESS[m][i]);
+
+            LCD_sendCW(0b11000000); //Next Line
+            for(i=0;MESS[m+1][i]!=0;i++)
+                LCD_sendData(MESS[m+1][i]);
+
+            for(z=0;z<1000;z++){_delay(10000);}
+
+            LCD_sendCW(0b00000001);
+	
+                
             //"turning right"
+            
+                
+
+                initLCD(); 
+
+                LCD_sendCW(0b00000110);
+                m=1*2;
+                for(i=0;MESS[m][i]!=0;i++)
+                    LCD_sendData(MESS[m][i]);
+
+                LCD_sendCW(0b11000000); //Next Line
+                for(i=0;MESS[m+1][i]!=0;i++)
+                    LCD_sendData(MESS[m+1][i]);
+
+                for(z=0;z<1000;z++){_delay(10000);}
+
+                LCD_sendCW(0b00000001);
+
+                //"input tilt 
+                // 90 max"
+
+        
+           
                 sevensegmentC();
             }
+            
             else{
+                
+                    
+
+              initLCD(); 
+
+              LCD_sendCW(0b00000110);
+              m=5*2;
+              for(i=0;MESS[m][i]!=0;i++)
+                  LCD_sendData(MESS[m][i]);
+
+              LCD_sendCW(0b11000000); //Next Line
+              for(i=0;MESS[m+1][i]!=0;i++)
+                  LCD_sendData(MESS[m+1][i]);
+
+              for(z=0;z<1000;z++){_delay(3000);}
+
+              LCD_sendCW(0b00000001);
+	  
             //"invalid input"
                  invalid2=1;
             } 
@@ -75,10 +249,27 @@ while(1){
         }//if1
 
     else if(autodecision=='D'){
-   
-        //"A=left
-        //B=right"
-       
+        
+        
+    
+            initLCD(); 
+
+            LCD_sendCW(0b00000110);
+            m=2*2;
+            for(i=0;MESS[m][i]!=0;i++)
+                LCD_sendData(MESS[m][i]);
+
+            LCD_sendCW(0b11000000); //Next Line
+            for(i=0;MESS[m+1][i]!=0;i++)
+                LCD_sendData(MESS[m+1][i]);
+
+            for(z=0;z<1000;z++){_delay(10000);}
+
+            LCD_sendCW(0b00000001);
+
+            //"A=left
+            //B=right"
+
         
         do{ 
         
@@ -87,19 +278,78 @@ while(1){
          direction= getkeypad();
         
               
-            if(direction=='B'){ //"turning right"
+            if(direction=='B'){ 
+                
+                
+    
+            initLCD(); 
+
+            LCD_sendCW(0b00000110);
+            m=4*2;
+            for(i=0;MESS[m][i]!=0;i++)
+                LCD_sendData(MESS[m][i]);
+
+            LCD_sendCW(0b11000000); //Next Line
+            for(i=0;MESS[m+1][i]!=0;i++)
+                LCD_sendData(MESS[m+1][i]);
+
+            for(z=0;z<1000;z++){_delay(10000);}
+
+            LCD_sendCW(0b00000001);
+
+                
+                //"turning right"
                 sevensegmentD(); 
             }
            
     
        
-            else if(direction=='A'){ //"Turing left"
+            else if(direction=='A')
+            { 
+                
+                
+            initLCD(); 
+
+            LCD_sendCW(0b00000110);
+            m=3*2;
+            for(i=0;MESS[m][i]!=0;i++)
+                LCD_sendData(MESS[m][i]);
+
+            LCD_sendCW(0b11000000); //Next Line
+            for(i=0;MESS[m+1][i]!=0;i++)
+                LCD_sendData(MESS[m+1][i]);
+
+            for(z=0;z<1000;z++){_delay(10000);}
+
+            LCD_sendCW(0b00000001);
+	
+                
+                //"Turing left"
                 sevensegmentD();
             }
            
             
-       
-                else{//"invalid input"
+    else{
+                
+                
+    
+            initLCD(); 
+
+            LCD_sendCW(0b00000110);
+            m=5*2;
+            for(i=0;MESS[m][i]!=0;i++)
+                LCD_sendData(MESS[m][i]);
+
+            LCD_sendCW(0b11000000); //Next Line
+            for(i=0;MESS[m+1][i]!=0;i++)
+                LCD_sendData(MESS[m+1][i]);
+
+            for(z=0;z<1000;z++){_delay(3000);}
+
+            LCD_sendCW(0b00000001);
+	
+                
+                //"invalid input"
                     invalid3=1;}
                     
         
@@ -109,102 +359,76 @@ while(1){
     }//if2
 
     else{
+        
+        
+    
+        initLCD(); 
+    
+		LCD_sendCW(0b00000110);
+		m=5*2;
+		for(i=0;MESS[m][i]!=0;i++)
+			LCD_sendData(MESS[m][i]);
+        
+        LCD_sendCW(0b11000000); //Next Line
+        for(i=0;MESS[m+1][i]!=0;i++)
+			LCD_sendData(MESS[m+1][i]);
+        
+        for(z=0;z<1000;z++){_delay(3000);}
+        
+		LCD_sendCW(0b00000001);
+	
         //"invalid input"
-        invalid1=1;
+         invalid1=1;
     }
 
         }while(invalid1==1); //check autodecision for auto or not and loop again if invalid
         
-}//large while 
 
-}//main
+    }//while(1)
+}
 
-char getkeypad(void)
-{
- char value_needed[]={'1','2','3','F','4','5','6','E','7','8','9','D','A','0','B','C' }; //look up table for inputs to encoder, index is binary expression
+char getkeypad(){
+    
+
+char value_needed[]={'1','2','3','F','4','5','6','E','7','8','9','D','A','0','B','C' }; //look up table for inputs to encoder, index is binary expression
 // char value_used; //value used from look up table
  char selection,selection2; //Declare for variable needed to perform lookup
  char value_used;
+ int checker;
+ checker=0;
  
-
-if(DA==1)
-{      
-    selection= (PORTB & 0x0F); //Selection is the variable used to performed lookup, PORTC in binary expression also preserves inputs for rc0 to rc3. This statement reads input.
-   _delay(80000);
+ while(checker==0)
+ {
+     
+ if(DA==1){
+     
+   selection= (PORTB & 0x0F); //Selection is the variable used to performed lookup, PORTC in binary expression also preserves inputs for rc0 to rc3. This statement reads input.
+   _delay(80000);//software debounce
    selection2= (PORTB & 0x0F);
-   if(selection2==selection)
-   {
-    value_used= value_needed[selection]; //convert binary input into character through look up table
-   }
-
    
-} //Execute if data available is 1
-
+   
+   checker=1;
+           
+           }
  
-  return value_used;
-} //keypad     
+ else{checker=0;}
+ 
+}if(selection2==selection)
+   {
+    value_used=value_needed[selection]; 
+          }
+ 
+ 
+ 
+return value_used;
 
-char MESS[][32] = {
-				{"PRESS C TO FLY STRAIGHT"},
-				{"INPUT TILT SIMULATION"},
-				{"TILT CORRECTED"},
-				{"SELECT TURN DIRECTION"},
-				{"TURNING RIGHT"},
-				{"TURNING LEFT"},
-				{"INVALID INPUT"}
-				};
-/*
-void lcdmessage()
-{
-	unsigned char i;
-	int m=1;
-    int e;
-    char CW[5]={0b00111000,0b00001100,0b00000110,0b00000001,0b00000010};
-	ADCON1=0x0F;
-	TRISA=0b11111100;
-	TRISC=0b00000000;
-	
-    SET;
-	_delay(1);
-	D1C1;
-	_delay(1);
-	ENTRY;
-	_delay(1);
-	CLEAR;
-	_delay(1);
-	HOME;
-	_delay(1);//Init LCD replacement
-    
-    
-	m= PORTC & 0xf;
-	PORTC=m;
-	for(i=0;MESS[m][i]!=0;i++)
-		LCD_sendData(MESS[m][i]);
-}
+} //keypad    
 
 
-void LCD_sendCW(char x)
-{
-	LCD_RS=0;
-	LCD_E=1;
-	LCD_DATA=x;
-	LCD_E=0;
-	_delay(1000);
-}
-
-void LCD_sendData(char x)
-{
-	LCD_RS=0;
-	LCD_E=1;
-	LCD_DATA=x;
-	LCD_E=0;
-	_delay(500);
-}
-*/
 
 void sevensegmentD(void)
 {
-int display[10] = {0b1111110, 0b0110000, 0b1101101, 0b1111001, 0b0110011, 0b1011011, 0b1011111, 0b1110000,0b1111111,0b1111011};   //CC lookup table
+int display[10] = {0b00000011, 0b10011111, 0b00100101, 0b00001101, 0b10011001, 0b01001001, 0b01000001, 0b00011111,0b00000001,0b00011001};   //CC lookup table
 int  HN = 0, LN = 0;
 int t;
 
@@ -213,47 +437,142 @@ int t;
 				HN = 1; //Finding the Lower Number
 				LN = 5; //Finding the Higher Number
 
-				for(t=0;t<1000;t++)
-					{
-						PORTE = 0b00000001;
-						PORTD = display[LN];  //writing to LCD
-						_delay(5000000); //setting time delay so we can see the lower number in a long enough time
-					}
-				for(t=0;t<1000;t++)
-					{
-						PORTE = 0b00000010;
-						PORTD = display[HN]; //writing to LCD
-						_delay(5000000); //setting time delay so we can see the higher number in a long enough time
-					}
-				LN = 0;
-				HN = 0; //resetting write cache
+				for(t=0;t<10000;t++)
+            		{
+                        PORTE = 0b00000001;
+                        PORTD = display[LN];  //writing to LCD
+                    	_delay(500); //setting time delay so we can see the lower number in a long enough time
+                	
+               	
+                        PORTE = 0b00000010;
+                        PORTD = display[HN]; //writing to LCD
+                        _delay(500);
+                    }
+				PORTE=0b00000001;
+                
+                PORTD=0b11111111;
+                PORTE=0b00000010;
+                PORTD=0b11111111; //clear 7 segment
 				
 
 }
 
 void sevensegmentC(void)
 {
-int display[10] = {0b1111110, 0b0110000, 0b1101101, 0b1111001, 0b0110011, 0b1011011, 0b1011111, 0b1110000,0b1111111,0b1111011};   //CC lookup table
+int display[10] = {0b00000011, 0b10011111, 0b00100101, 0b00001101, 0b10011001, 0b01001001, 0b01000001, 0b00011111,0b00000001,0b00011001};   //CC lookup table
 int  HN = 0, LN = 0;
-int t;
-				
+int t,z,m,i,result;
+char x;
+char MESS[][16] = {
+				{"C TO AUTOPILOT"},
+                {"D TO STEER"},
+				{"INPUT TILT"},
+                {"90 MAX"},
+				{"A=LEFT"},
+                {"B=RIGHT"},
+				{"TURNING LEFT"},
+                {"BOI"},
+				{"TURNING RIGHT"},
+                {"BOI"},
+				{"INVALID INPUT"},
+                {"TRY AGAIN"}, 
+                
+                {"INPUT BIG NO"},
+                {"BOI"},
+                {"INPUT SMALL NO"},
+                {"BOI"}      };
+
+            
+    
+            initLCD(); 
+
+            LCD_sendCW(0b00000110);
+            m=6*2;
+            for(i=0;MESS[m][i]!=0;i++)
+                LCD_sendData(MESS[m][i]);
+
+            LCD_sendCW(0b11000000); //Next Line
+            for(i=0;MESS[m+1][i]!=0;i++)
+                LCD_sendData(MESS[m+1][i]);
+
+            for(z=0;z<1000;z++){_delay(5000);}
+
+            LCD_sendCW(0b00000001);
+	
+                
+                //"INPUT BIG NO, BOI"
+                    
+
 						HN = getkeypad(); //Finding the Lower Number
+                       
+                        
+                         
+                    initLCD(); 
+
+                    LCD_sendCW(0b00000110);
+                    m=7*2;
+                    for(i=0;MESS[m][i]!=0;i++)
+                        LCD_sendData(MESS[m][i]);
+
+                    LCD_sendCW(0b11000000); //Next Line
+                    for(i=0;MESS[m+1][i]!=0;i++)
+                        LCD_sendData(MESS[m+1][i]);
+
+                    for(z=0;z<1000;z++){_delay(5000);}
+
+                    LCD_sendCW(0b00000001);
+
+                
+                //"INPUT SMALL NO, BOI" 
+                        
+                        
+                        
 						LN = getkeypad(); //Finding the Higher Number
-						
+                        
+						for(t=0;t<10000;t++)
+                        {
+                    	
 						PORTE = 0b00000001;
 						PORTD = display[LN];  //writing to LCD
 						_delay(500); //setting time delay so we can see the lower number in a long enough time
-						
+                    
+                        
 						PORTE = 0b00000010;
 						PORTD = display[HN]; //writing to LCD
 						_delay(500); //setting time delay so we can see the higher number in a long enough time
+                       
+                        }
                         
                         do{
+                            
                         warningsound();//beep boop beep boop danger
-						(HN*10+LN)/1.1;
+                        
+                        result=((HN*10)+LN)/1.2;
+                        HN=result/10;
+                        LN=result%10;
+                        
+                        for(t=0;t<5000;t++)
+                        {
+                    	
+						PORTE = 0b00000001;
+						PORTD = display[LN];  //writing to LCD
+						_delay(500); //setting time delay so we can see the lower number in a long enough time
+                    
+                        
+						PORTE = 0b00000010;
+						PORTD = display[HN]; //writing to LCD
+						_delay(500); //setting time delay so we can see the higher number in a long enough time
+                       
+                        }
+                        
                         }while((HN*10+LN)>0);
+                      
                         
                         safetysound();
+                        
+                        PORTD=0b11111111;
+                        PORTE=0b00000010;
+                        PORTD=0b11111111; //clear 7 segment
                         
 }// end of seven segment
 
@@ -339,20 +658,21 @@ for (x=0;x<30;x++)
 }//end of sound
 
 void warningsound(void){
-    int x;
-for (x=0;x<200;x++)
+    int x,a;
+    for(a=0;a<1;a++)
+    {
+        for(x=0;x<50;x++)
         {
             PORTBbits.RB5=1;
-            _delay(568);
+            _delay(1260);
             PORTBbits.RB5=0;
-            _delay(269);
+            _delay(1260);
         }
-          for (x=0;x<600;x++)
+ 
+        for(x=0;x<5000;x++)
         {
-            PORTBbits.RB5=1;
-            _delay(239);
-            PORTBbits.RB5=0;
-            _delay(239);
+        PORTBbits.RB5=0;
         }
+    }
 }//end of sound
 
