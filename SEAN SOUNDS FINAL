@@ -20,7 +20,7 @@ for (x=0;x<30;x++)
         }
         for(x=0;x<3000;x++)
         {
-        PORTAbits.RA4=0;
+        PORTBbits.RB5=0;
         }
         for (x=0;x<30;x++)
         {
@@ -42,7 +42,7 @@ for (x=0;x<30;x++)
         }
         for(x=0;x<1000;x++)
         {
-        PORTAbits.RA4=0;
+        PORTBbits.RB5=0;
         }
         for (x=0;x<30;x++)
         {
@@ -53,7 +53,7 @@ for (x=0;x<30;x++)
         }
         for(x=0;x<3000;x++)
         {
-        PORTAbits.RA4=0;
+        PORTBbits.RB5=0;
         }
         for (x=0;x<30;x++)
         {
