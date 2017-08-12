@@ -57,7 +57,7 @@ char MESS[][16] = {
 				{"TURNING RIGHT"},
                 {"BOI"},
 				{"INVALID INPUT"},
-                {"TRY AGAIN"},
+                {"PRESS RESET"},
                 {"INPUT BIG NO"},
                 {"BOI"},
                 {"INPUT SMALL NO"},
@@ -405,22 +405,20 @@ char value_needed[]={'1','2','3','F','4','5','6','E','7','8','9','D','A','0','B'
    selection= (PORTB & 0x0F); //Selection is the variable used to performed lookup, PORTC in binary expression also preserves inputs for rc0 to rc3. This statement reads input.
    _delay(80000);//software debounce
    selection2= (PORTB & 0x0F);
+   if(selection2==selection)
+   {
+    value_used=value_needed[selection]; 
+          }
    
    
    checker=1;
+   return value_used;
            
            }
  
  else{checker=0;}
  
-}if(selection2==selection)
-   {
-    value_used=value_needed[selection]; 
-          }
- 
- 
- 
-return value_used;
+}
 
 } //keypad    
 
@@ -448,6 +446,7 @@ int t;
                         PORTD = display[HN]; //writing to LCD
                         _delay(500);
                     }
+                
 				PORTE=0b00000001;
                 
                 PORTD=0b11111111;
@@ -475,7 +474,7 @@ char MESS[][16] = {
 				{"TURNING RIGHT"},
                 {"BOI"},
 				{"INVALID INPUT"},
-                {"TRY AGAIN"}, 
+                {"PRESS RESET"}, 
                 
                 {"INPUT BIG NO"},
                 {"BOI"},
@@ -503,7 +502,7 @@ char MESS[][16] = {
                 //"INPUT BIG NO, BOI"
                     
 
-						HN = getkeypad(); //Finding the Lower Number
+						HN = getkeypad()-'0'; //Finding the Lower Number char to int
                        
                         
                          
@@ -527,7 +526,7 @@ char MESS[][16] = {
                         
                         
                         
-						LN = getkeypad(); //Finding the Higher Number
+						LN = getkeypad()-'0'; //Finding the Higher Number char to int
                         
 						for(t=0;t<10000;t++)
                         {
@@ -547,11 +546,11 @@ char MESS[][16] = {
                             
                         warningsound();//beep boop beep boop danger
                         
-                        result=((HN*10)+LN)/1.2;
+                        result=((HN*10)+LN)/1.1;
                         HN=result/10;
                         LN=result%10;
                         
-                        for(t=0;t<5000;t++)
+                        for(t=0;t<2000;t++)
                         {
                     	
 						PORTE = 0b00000001;
@@ -659,7 +658,7 @@ for (x=0;x<30;x++)
 
 void warningsound(void){
     int x,a;
-    for(a=0;a<1;a++)
+    for(a=0;a<2;a++)
     {
         for(x=0;x<50;x++)
         {
