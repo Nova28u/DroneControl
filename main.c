@@ -1,7 +1,7 @@
 #include <xc.h>
 #include "main_project.h"
 
-#define DA PORTDbits.RD0 // Define data available from encoder
+#define DA PORTBbits.RB4 // Define data available from encoder
 #define LCD_DATA PORTC
 #define LCD_RS PORTAbits.RA0
 #define LCD_E PORTAbits.RA1
@@ -22,7 +22,7 @@ void warningsound();
 void sevensegmentC();
 void sevensegmentD();
 
-void main() {
+void main(){
   
     
 ADCON1 = 0x0F;         //allow usage of digital inputs for all pins
@@ -33,8 +33,7 @@ TRISD = 0b00000000;    //Declare outputs for 7 segment
 TRISE = 0b00000000;    //LCD selector
 
 char autodecision,tiltangle1,direction;
-int invalid1,invalid2,invalid3;//loop back to first condition of if else statements
-unsigned char i;
+char i;
 int m,z,checker;
 char x;
 
@@ -57,18 +56,15 @@ char MESS[][16] = {
 				{"TURNING RIGHT"},
                 {"BOI"},
 				{"INVALID INPUT"},
-                {"PRESS RESET"},
-                {"INPUT BIG NO"},
-                {"BOI"},
-                {"INPUT SMALL NO"},
-                {"BOI"}
+                {"RESETTING LIFE"},
+                
 };
 
 
     
     while(1){
         
-    invalid1=0;
+   
        
         
         initLCD(); 
@@ -91,10 +87,7 @@ char MESS[][16] = {
    
     autodecision=getkeypad();
     
-    
-    
-    
-     do{
+ 
          
        
     if(autodecision=='C'){
@@ -122,15 +115,13 @@ char MESS[][16] = {
 
           direction= getkeypad();
         
-        do{
-            invalid2=0;
+        
+            
             
   
             if(direction=='A'){
                  
                 
-            
-
             initLCD(); 
 
             LCD_sendCW(0b00000110);
@@ -241,9 +232,8 @@ char MESS[][16] = {
               LCD_sendCW(0b00000001);
 	  
             //"invalid input"
-                 invalid2=1;
-            } 
-        }while(invalid2==1);   
+                 
+            }   
     
 
         }//if1
@@ -271,9 +261,9 @@ char MESS[][16] = {
             //B=right"
 
         
-        do{ 
         
-        invalid3=0; 
+        
+        
         
          direction= getkeypad();
         
@@ -350,10 +340,10 @@ char MESS[][16] = {
 	
                 
                 //"invalid input"
-                    invalid3=1;}
                     
+    }         
         
-        }while(invalid3==1); //do while loop to check direction for manual turn
+        
                 
         
     }//if2
@@ -378,14 +368,14 @@ char MESS[][16] = {
 		LCD_sendCW(0b00000001);
 	
         //"invalid input"
-         invalid1=1;
+         
     }
 
-        }while(invalid1==1); //check autodecision for auto or not and loop again if invalid
         
 
     }//while(1)
-}
+}//main
+
 
 char getkeypad(){
     
@@ -409,16 +399,15 @@ char value_needed[]={'1','2','3','F','4','5','6','E','7','8','9','D','A','0','B'
    {
     value_used=value_needed[selection]; 
           }
-   
-   
-   checker=1;
    return value_used;
-           
+   checker=1;
+   
            }
  
  else{checker=0;}
  
-}
+}//while
+ 
 
 } //keypad    
 
@@ -460,22 +449,10 @@ void sevensegmentC(void)
 {
 int display[10] = {0b00000011, 0b10011111, 0b00100101, 0b00001101, 0b10011001, 0b01001001, 0b01000001, 0b00011111,0b00000001,0b00011001};   //CC lookup table
 int  HN = 0, LN = 0;
-int t,z,m,i,result;
+int t,z,i,result;
 char x;
-char MESS[][16] = {
-				{"C TO AUTOPILOT"},
-                {"D TO STEER"},
-				{"INPUT TILT"},
-                {"90 MAX"},
-				{"A=LEFT"},
-                {"B=RIGHT"},
-				{"TURNING LEFT"},
-                {"BOI"},
-				{"TURNING RIGHT"},
-                {"BOI"},
-				{"INVALID INPUT"},
-                {"PRESS RESET"}, 
-                
+char MESSspecial[4][16] = {
+				
                 {"INPUT BIG NO"},
                 {"BOI"},
                 {"INPUT SMALL NO"},
@@ -486,13 +463,13 @@ char MESS[][16] = {
             initLCD(); 
 
             LCD_sendCW(0b00000110);
-            m=6*2;
-            for(i=0;MESS[m][i]!=0;i++)
-                LCD_sendData(MESS[m][i]);
+           
+            for(i=0;MESSspecial[0][i]!=0;i++)
+            LCD_sendData(MESSspecial[0][i]);
 
             LCD_sendCW(0b11000000); //Next Line
-            for(i=0;MESS[m+1][i]!=0;i++)
-                LCD_sendData(MESS[m+1][i]);
+            for(i=0;MESSspecial[1][i]!=0;i++)
+                LCD_sendData(MESSspecial[1][i]);
 
             for(z=0;z<1000;z++){_delay(5000);}
 
@@ -509,13 +486,13 @@ char MESS[][16] = {
                     initLCD(); 
 
                     LCD_sendCW(0b00000110);
-                    m=7*2;
-                    for(i=0;MESS[m][i]!=0;i++)
-                        LCD_sendData(MESS[m][i]);
+                    
+                    for(i=0;MESSspecial[2][i]!=0;i++)
+                        LCD_sendData(MESSspecial[2][i]);
 
                     LCD_sendCW(0b11000000); //Next Line
-                    for(i=0;MESS[m+1][i]!=0;i++)
-                        LCD_sendData(MESS[m+1][i]);
+                    for(i=0;MESSspecial[3][i]!=0;i++)
+                        LCD_sendData(MESSspecial[3][i]);
 
                     for(z=0;z<1000;z++){_delay(5000);}
 
