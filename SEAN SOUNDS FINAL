@@ -1,0 +1,100 @@
+void safetysound(void){
+int x;
+for (x=0;x<30;x++)
+        {
+            PORTBbits.RB5=1;
+            _delay(758);
+            PORTBbits.RB5=0;
+            _delay(758);
+        }
+        for(x=0;x<1500;x++)
+        {
+        PORTBbits.RB5=0;
+        }
+          for (x=0;x<30;x++)
+        {
+            PORTBbits.RB5=1;
+            _delay(758);
+            PORTBbits.RB5=0;
+            _delay(758);
+        }
+        for(x=0;x<3000;x++)
+        {
+        PORTAbits.RA4=0;
+        }
+        for (x=0;x<30;x++)
+        {
+            PORTBbits.RB5=1;
+            _delay(758);
+            PORTBbits.RB5=0;
+            _delay(758);
+        }
+        for(x=0;x<3000;x++)
+        {
+        PORTBbits.RB5=0;
+        }
+        for (x=0;x<30;x++)
+        {
+            PORTBbits.RB5=1;
+            _delay(980);
+            PORTBbits.RB5=0;
+            _delay(980);
+        }
+        for(x=0;x<1000;x++)
+        {
+        PORTAbits.RA4=0;
+        }
+        for (x=0;x<30;x++)
+        {
+            PORTBbits.RB5=1;
+            _delay(758);
+            PORTBbits.RB5=0;
+            _delay(758);
+        }
+        for(x=0;x<3000;x++)
+        {
+        PORTAbits.RA4=0;
+        }
+        for (x=0;x<30;x++)
+        {
+            PORTBbits.RB5=1;
+            _delay(649);
+            PORTBbits.RB5=0;
+            _delay(649);
+        }
+         for(x=0;x<5500;x++)
+        {
+        PORTBbits.RB5=0;
+        }
+        for (x=0;x<30;x++)
+        {
+            PORTBbits.RB5=1;
+            _delay(1316);
+            PORTBbits.RB5=0;
+            _delay(1316);
+        }
+         for(x=0;x<5750;x++)
+        {
+        PORTBbits.RB5=0;
+        }
+}//end of sound
+
+void warningsound(void){
+    int x,a;
+    for(a=0;a<2;a++)
+    {
+        for(x=0;x<50;x++)
+        {
+            PORTBbits.RB5=1;
+            _delay(1260);
+            PORTBbits.RB5=0;
+            _delay(1260);
+        }
+ 
+        for(x=0;x<5000;x++)
+        {
+        PORTBbits.RB5=0;
+        }
+    }
+}//end of sound
+
