@@ -28,28 +28,16 @@ int t;
                 PORTD=0b11111111; //clear 7 segment
 				
 
-}//end of sevensegmentD
+}
 
 void sevensegmentC(void)
 {
 int display[10] = {0b00000011, 0b10011111, 0b00100101, 0b00001101, 0b10011001, 0b01001001, 0b01000001, 0b00011111,0b00000001,0b00011001};   //CC lookup table
 int  HN = 0, LN = 0;
-int t,z,m,i,result;
+int t,z,i,result;
 char x;
-char MESS[][16] = {
-				{"C TO AUTOPILOT"},
-                {"D TO STEER"},
-				{"INPUT TILT"},
-                {"90 MAX"},
-				{"A=LEFT"},
-                {"B=RIGHT"},
-				{"TURNING LEFT"},
-                {"BOI"},
-				{"TURNING RIGHT"},
-                {"BOI"},
-				{"INVALID INPUT"},
-                {"PRESS RESET"}, 
-                
+char MESSspecial[4][16] = {
+				
                 {"INPUT BIG NO"},
                 {"BOI"},
                 {"INPUT SMALL NO"},
@@ -60,13 +48,13 @@ char MESS[][16] = {
             initLCD(); 
 
             LCD_sendCW(0b00000110);
-            m=6*2;
-            for(i=0;MESS[m][i]!=0;i++)
-                LCD_sendData(MESS[m][i]);
+           
+            for(i=0;MESSspecial[0][i]!=0;i++)
+            LCD_sendData(MESSspecial[0][i]);
 
             LCD_sendCW(0b11000000); //Next Line
-            for(i=0;MESS[m+1][i]!=0;i++)
-                LCD_sendData(MESS[m+1][i]);
+            for(i=0;MESSspecial[1][i]!=0;i++)
+                LCD_sendData(MESSspecial[1][i]);
 
             for(z=0;z<1000;z++){_delay(5000);}
 
@@ -76,20 +64,20 @@ char MESS[][16] = {
                 //"INPUT BIG NO, BOI"
                     
 
-						HN = getkeypad()-'0'; //Finding the Lower Number char to int conversion also done
+						HN = getkeypad()-'0'; //Finding the Lower Number char to int
                        
                         
                          
                     initLCD(); 
 
                     LCD_sendCW(0b00000110);
-                    m=7*2;
-                    for(i=0;MESS[m][i]!=0;i++)
-                        LCD_sendData(MESS[m][i]);
+                    
+                    for(i=0;MESSspecial[2][i]!=0;i++)
+                        LCD_sendData(MESSspecial[2][i]);
 
                     LCD_sendCW(0b11000000); //Next Line
-                    for(i=0;MESS[m+1][i]!=0;i++)
-                        LCD_sendData(MESS[m+1][i]);
+                    for(i=0;MESSspecial[3][i]!=0;i++)
+                        LCD_sendData(MESSspecial[3][i]);
 
                     for(z=0;z<1000;z++){_delay(5000);}
 
@@ -100,7 +88,7 @@ char MESS[][16] = {
                         
                         
                         
-						LN = getkeypad()-'0'; //Finding the Higher Number char to int also done
+						LN = getkeypad()-'0'; //Finding the Higher Number char to int
                         
 						for(t=0;t<10000;t++)
                         {
@@ -147,4 +135,4 @@ char MESS[][16] = {
                         PORTE=0b00000010;
                         PORTD=0b11111111; //clear 7 segment
                         
-}// end of seven segmentC
+}// end of seven segment
