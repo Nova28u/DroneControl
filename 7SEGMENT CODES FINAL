@@ -5,7 +5,7 @@ int  HN = 0, LN = 0;
 int t;
 
 	
-				
+LEDYELLOW=1;
 				HN = 1; //Finding the Lower Number
 				LN = 5; //Finding the Higher Number
 
@@ -20,6 +20,8 @@ int t;
                         PORTD = display[HN]; //writing to LCD
                         _delay(500);
                     }
+      
+LEDYELLOW=0;               
                 
 				PORTE=0b00000001;
                 
@@ -90,7 +92,7 @@ char MESSspecial[4][16] = {
                         
 						LN = getkeypad()-'0'; //Finding the Higher Number char to int
                         
-						for(t=0;t<10000;t++)
+						for(t=0;t<5000;t++)
                         {
                     	
 						PORTE = 0b00000001;
@@ -105,6 +107,9 @@ char MESSspecial[4][16] = {
                         }
                         
                         do{
+                        
+                            
+                        LEDRED=1;
                             
                         warningsound();//beep boop beep boop danger
                         
@@ -112,8 +117,11 @@ char MESSspecial[4][16] = {
                         HN=result/10;
                         LN=result%10;
                         
-                        for(t=0;t<2000;t++)
+                        
+                        
+                        for(t=0;t<1000;t++)
                         {
+                        
                     	
 						PORTE = 0b00000001;
 						PORTD = display[LN];  //writing to LCD
@@ -123,13 +131,19 @@ char MESSspecial[4][16] = {
 						PORTE = 0b00000010;
 						PORTD = display[HN]; //writing to LCD
 						_delay(500); //setting time delay so we can see the higher number in a long enough time
-                       
+                        
+                        
                         }
+                        
+                        LEDRED=0;
                         
                         }while((HN*10+LN)>0);
                       
+                        LEDGREEN=1;
                         
                         safetysound();
+                        
+                        LEDGREEN=0;
                         
                         PORTD=0b11111111;
                         PORTE=0b00000010;
