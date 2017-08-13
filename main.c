@@ -1,7 +1,10 @@
 #include <xc.h>
 #include "main_project.h"
 
-#define DA PORTBbits.RB4 // Define data available from encoder
+#define LEDRED PORTAbits.RA2
+#define LEDYELLOW PORTAbits.RA3
+#define LEDGREEN PORTAbits.RA4
+
 #define LCD_DATA PORTC
 #define LCD_RS PORTAbits.RA0
 #define LCD_E PORTAbits.RA1
@@ -26,7 +29,7 @@ void main(){
   
     
 ADCON1 = 0x0F;         //allow usage of digital inputs for all pins
-TRISA = 0b00001000;    //Declare extra output pins for LCD 
+TRISA = 0b11100000;    //Declare extra output pins for LCD 
 TRISB = 0b11001111;    //Declare inputs from RB0 to RB3 and output from RB4 and RB5 ignore RB6 and RB7 note: RB5 is speaker
 TRISC = 0b00000000;    //Declare output pins for LCD
 TRISD = 0b00000000;    //Declare outputs for 7 segment
@@ -51,16 +54,41 @@ char MESS[][16] = {
                 {"90 MAX"},
 				{"A=LEFT"},
                 {"B=RIGHT"},
-				{"TURNING LEFT"},
-                {"BOI"},
-				{"TURNING RIGHT"},
-                {"BOI"},
-				{"INVALID INPUT"},
-                {"RESETTING LIFE"},
+				{"UAV"},
+                {"TURNING LEFT"},
+				{"UAV"},
+                {"TURNING RIGHT"},
+				{"INVALID/NO INPUT"},
+                {"FLIGHT CONTINUES"},
+                {"WELCOME TO UAV"},
+                {"SIMULATOR 2017"}
+                
+               
                 
 };
+LEDRED=1;
+LEDYELLOW=1;
+LEDGREEN=1;
 
 
+        initLCD();
+        LCD_sendCW(0b00000110);
+		m=6*2;
+		for(i=0;MESS[m][i]!=0;i++)
+			LCD_sendData(MESS[m][i]);
+        
+        LCD_sendCW(0b11000000); //Next Line
+        for(i=0;MESS[m+1][i]!=0;i++)
+			LCD_sendData(MESS[m+1][i]);
+        
+        for(z=0;z<1000;z++){_delay(10000);}
+        
+		LCD_sendCW(0b00000001);
+
+LEDRED=0;
+LEDYELLOW=0;
+LEDGREEN=0;      
+       
     
     while(1){
         
@@ -384,30 +412,19 @@ char value_needed[]={'1','2','3','F','4','5','6','E','7','8','9','D','A','0','B'
 // char value_used; //value used from look up table
  char selection,selection2; //Declare for variable needed to perform lookup
  char value_used;
- int checker;
- checker=0;
+
  
- while(checker==0)
- {
-     
- if(DA==1){
-     
+ 
    selection= (PORTB & 0x0F); //Selection is the variable used to performed lookup, PORTC in binary expression also preserves inputs for rc0 to rc3. This statement reads input.
    _delay(80000);//software debounce
-   selection2= (PORTB & 0x0F);
+   selection2 = (PORTB & 0x0F);
+   
    if(selection2==selection)
    {
-    value_used=value_needed[selection]; 
+    value_used = value_needed[selection]; 
           }
-   return value_used;
-   checker=1;
-   
-           }
- 
- else{checker=0;}
- 
-}//while
- 
+
+ return value_used;
 
 } //keypad    
 
@@ -420,7 +437,7 @@ int  HN = 0, LN = 0;
 int t;
 
 	
-				
+LEDYELLOW=1;
 				HN = 1; //Finding the Lower Number
 				LN = 5; //Finding the Higher Number
 
@@ -435,6 +452,8 @@ int t;
                         PORTD = display[HN]; //writing to LCD
                         _delay(500);
                     }
+      
+LEDYELLOW=0;               
                 
 				PORTE=0b00000001;
                 
@@ -505,7 +524,7 @@ char MESSspecial[4][16] = {
                         
 						LN = getkeypad()-'0'; //Finding the Higher Number char to int
                         
-						for(t=0;t<10000;t++)
+						for(t=0;t<5000;t++)
                         {
                     	
 						PORTE = 0b00000001;
@@ -520,6 +539,9 @@ char MESSspecial[4][16] = {
                         }
                         
                         do{
+                        
+                            
+                        LEDRED=1;
                             
                         warningsound();//beep boop beep boop danger
                         
@@ -527,8 +549,11 @@ char MESSspecial[4][16] = {
                         HN=result/10;
                         LN=result%10;
                         
-                        for(t=0;t<2000;t++)
+                        
+                        
+                        for(t=0;t<1000;t++)
                         {
+                        
                     	
 						PORTE = 0b00000001;
 						PORTD = display[LN];  //writing to LCD
@@ -538,13 +563,19 @@ char MESSspecial[4][16] = {
 						PORTE = 0b00000010;
 						PORTD = display[HN]; //writing to LCD
 						_delay(500); //setting time delay so we can see the higher number in a long enough time
-                       
+                        
+                        
                         }
+                        
+                        LEDRED=0;
                         
                         }while((HN*10+LN)>0);
                       
+                        LEDGREEN=1;
                         
                         safetysound();
+                        
+                        LEDGREEN=0;
                         
                         PORTD=0b11111111;
                         PORTE=0b00000010;
@@ -574,7 +605,7 @@ for (x=0;x<30;x++)
         }
         for(x=0;x<3000;x++)
         {
-        PORTAbits.RA4=0;
+        PORTBbits.RB5=0;
         }
         for (x=0;x<30;x++)
         {
@@ -596,7 +627,7 @@ for (x=0;x<30;x++)
         }
         for(x=0;x<1000;x++)
         {
-        PORTAbits.RA4=0;
+        PORTBbits.RB5=0;
         }
         for (x=0;x<30;x++)
         {
@@ -607,7 +638,7 @@ for (x=0;x<30;x++)
         }
         for(x=0;x<3000;x++)
         {
-        PORTAbits.RA4=0;
+        PORTBbits.RB5=0;
         }
         for (x=0;x<30;x++)
         {
